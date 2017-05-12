@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Tickets</title>
+</head>
+<body>
+    <!--AJAX used to call the web API. jQuery used to make the AJAX calls and also to update the page with the results.-->
+    <div>
+        <h2>All Tickets</h2>
+        <ul id="tickets" />
+    </div>
+    <div>
+        <h2>Search by ID</h2>
+        <input type="text" id="ticketId" size="5" />
+        <input type="button" value="Search" onclick="find();" />
+        <p id="ticket" />
+    </div>
+
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+    <script>
+    var uri = 'api/tickets';
+
+    $(document).ready(function () {
+      // Send an AJAX request
+      $.getJSON(uri)
+          .done(function (data) {
+            // On success, 'data' contains a list of products.
+            $.each(data, function (key, item) {
+              // Add a list item for the product.
+              $('<li>', { text: formatItem(item) }).appendTo($('#tickets'));
+            });
+          });
+    });
+
+    function formatItem(item) {
+        return item.Reporter + ' MSG: ' + item.Message;
+    }
+
+    function find() {
+      var id = $('#ticketId').val();
+      $.getJSON(uri + '/' + id)
+          .done(function (data) {
+            $('#ticket').text(formatItem(data));
+          })
+          .fail(function (jqXHR, textStatus, err) {
+              $('#ticket').text('Error: ' + err);
+          });
+    }
+    </script>
+</body>
+</html>
