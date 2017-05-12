@@ -27,30 +27,33 @@ namespace RESTAPI.Controllers
 {
     public class TicketsController : ApiController
     {
-        Ticket[] tickets = new Ticket[]
-       {
-            new Ticket { Id = 1, Reporter="Gogu 1", Message = "Tomato Soup"},
-            new Ticket { Id = 2, Reporter="Gogu 2", Message = "Fluffy panda"},
-            new Ticket { Id = 3, Reporter="Gogu 3", Message = "Pink unicorns"}
-       };
         //*****************************************
         //Controller Method   URI - GetAllTickets	/api/tickets
         //*****************************************
-        public IEnumerable<Ticket> GetAllTickets()
+        public IEnumerable<TICKET> GetAllTickets()
         {
-            return tickets;
+            using (var db = new TicketsEntities())
+            {
+                var query = from ticket in db.TICKETS
+                            orderby ticket.Id
+                            select ticket;
+                return query.ToList();
+            }
         }
         //*****************************************
         //Controller Method   URI - GetTicket	/api/tickets/id
         //*****************************************
         public IHttpActionResult GetTicket(int id)
         {
-            var ticket = tickets.FirstOrDefault((p) => p.Id == id);
-            if (ticket == null)
+            using (var db = new TicketsEntities())
             {
-                return NotFound();
+                var ticket = db.TICKETS.FirstOrDefault((p) => p.Id == id);
+                if (ticket == null)
+                {
+                    return NotFound();
+                }
+                return Ok(ticket);
             }
-            return Ok(ticket);
         }
     }
 }
