@@ -9,13 +9,17 @@
 
 namespace RESTAPI
 {
+    using ProtoBuf;
     using System;
     using System.Collections.Generic;
-    
+    [ProtoContract]
     public partial class TICKET
     {
+        [ProtoMember(1)]
         public int Id { get; set; }
+        [ProtoMember(2)]
         public string Reporter { get; set; }
+        [ProtoMember(3)]
         public string Message { get; set; }
     }
 }

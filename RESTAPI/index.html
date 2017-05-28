@@ -7,7 +7,10 @@
 <body>
     <!--AJAX used to call the web API. jQuery used to make the AJAX calls and also to update the page with the results.-->
     <div>
+        <p id="AllTickets">
         <h2>All Tickets</h2>
+        </p>
+       
         <ul id="tickets" />
     </div>
     <div>
@@ -30,7 +33,10 @@
               // Add a list item for the product.
               $('<li>', { text: formatItem(item) }).appendTo($('#tickets'));
             });
-          });
+            })
+         .fail(function (jqXHR, textStatus, err) {
+             $('#AllTickets').text('Error: ' + err);
+        });
     });
 
     function formatItem(item) {
@@ -38,8 +44,14 @@
     }
 
     function find() {
-      var id = $('#ticketId').val();
-      $.getJSON(uri + '/' + id)
+        var id = $('#ticketId').val();
+        /*$.ajaxSetup({
+            headers: {
+                'Accept-Encoding': 'gzip'
+           }
+         });
+        */
+        $.getJSON(uri + '/' + id)
           .done(function (data) {
             $('#ticket').text(formatItem(data));
           })

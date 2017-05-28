@@ -1,9 +1,11 @@
 ﻿using RESTAPI.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 //*****************************************
 // In Web API, a controller is an object that handles HTTP requests.
@@ -30,15 +32,53 @@ namespace RESTAPI.Controllers
         //*****************************************
         //Controller Method   URI - GetAllTickets	/api/tickets
         //*****************************************
-        public IEnumerable<TICKET> GetAllTickets()
+        public async Task<IEnumerable<TICKET>> GetAllTickets()
         {
-            using (var db = new TicketsEntities())
+            //Parallel foreach  - not needed now
+            //Async progr   - done
+            //Compression - tried with deflate, many issues. GetJson header - accept-encoding gzip, not working because changed to default, but default includes gzip. Also, changing IIS - windows features, IIS, world wide web, performance, dynamic compression
+            //Caching
+            //Other serializers than Json ex Jil, Protobuf-Net
+            //Proper DB structure
+            //Do client side validation
+            //Faster data access strategies: ADO.Net is the fastest way to retrieve data from the database
+
+            // Maximize the number of concurrent requests that your Web API can handle at a given point of time. 
+            // In using asynchrony properly, you can leverage the multiple cores in your system and maximize the application's throughput. 
+            // Throughput is defined as the measure of the amount of work done in a unit of time.
+
+            try
             {
-                var query = from ticket in db.TICKETS
-                            orderby ticket.Id
-                            select ticket;
-                return query.ToList();
+                using (var db = new TicketsEntities())
+                {
+                    /*var query = from ticket in db.TICKETS
+                                orderby ticket.Id
+                                select ticket;*/
+
+                    // return await dbContext.Payroll.ToListAsync<Employee>();
+                    return await db.TICKETS.ToListAsync<TICKET>();
+
+                    //return await query.ToListAsync();
+                    //return query.ToList();
+                }
             }
+            catch(Exception e)
+            {
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError)
+                {
+                    Content = new StringContent("An error occurred, please try again or contact the administrator."),
+                    ReasonPhrase = "Critical Exception"
+                });
+            }
+            //if ((int)response.StatusCode>=500 && (int)response.StatusCode<600)
+            //throw new HttpRequestException("Server error");
+            //(int)response.StatusCode >= (int)System.Net.HttpStatusCode.InternalServerError
+            // using (var connection = new AdventureWorksEntities())
+            //{
+            //     var states = (from s in connection.States
+            //                  select (s)).ToList().Select(s => new ListItem(s.Name, s.StateId.ToString()));
+            //    return states;
+            //}
         }
         //*****************************************
         //Controller Method   URI - GetTicket	/api/tickets/id
