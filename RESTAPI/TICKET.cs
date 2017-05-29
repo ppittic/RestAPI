@@ -21,5 +21,13 @@ namespace RESTAPI
         public string Reporter { get; set; }
         [ProtoMember(3)]
         public string Message { get; set; }
+
+        public TICKET() { }
+        public TICKET(int id, string reporter, string message)
+        {
+            Id = id;
+            Reporter = reporter;
+            Message = message;
+        }
     }
 }

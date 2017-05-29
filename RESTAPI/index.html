@@ -16,7 +16,13 @@
     <div>
         <h2>Search by ID</h2>
         <input type="text" id="ticketId" size="5" />
+        <input type="text" id="Reporter" size="50" />
+        <input type="text" id="Message" size="50" />
         <input type="button" value="Search" onclick="find();" />
+        <input type="button" value="Delete" onclick="deleteTicket();" />
+        <input type="button" value="Put" onclick="putTicket();" />
+        <input type="button" value="Post" onclick="postTicket();" />
+        <input type="button" value="Patch" onclick="patchTicket();" />
         <p id="ticket" />
     </div>
 
@@ -36,6 +42,11 @@
             })
          .fail(function (jqXHR, textStatus, err) {
              $('#AllTickets').text('Error: ' + err);
+
+             if (err == "Critical Exception")
+                 alert("Critical"); 
+             else
+             alert('getJSON request failed! ' + textStatus + "err:"+err); 
         });
     });
 
@@ -56,9 +67,72 @@
             $('#ticket').text(formatItem(data));
           })
           .fail(function (jqXHR, textStatus, err) {
-              $('#ticket').text('Error: ' + err);
+              $('#ticket').text('Error: ' + err + "text status" + textStatus);
+
+              if (jqXHR.status == 404) {
+                  alert("404 Not Found");
+              } else {
+                  alert("Other non-handled error type");
+              }
           });
-    }
+        }
+
+        function deleteTicket() {
+            var id = $('#ticketId').val();
+            $.ajax({
+                url: uri + '/' + id,
+                type: 'DELETE',
+                success: function (result) {
+                    $('#ticket').text(id + 'deleted');
+                },
+                fail: function (jqXHR, textStatus, err) {
+                    $('#ticket').text('Error: ' + err + "text status" + textStatus);
+                }
+            });
+        }
+        //
+        function postTicket() {
+            var id = $('#ticketId').val();
+            var reporter = $('#Reporter').val();
+            var message = $('#Message').val();
+            $.postJSON(uri + '/' + id + '/' + reporter + '/' + message)
+                .done(function (data) {
+                    $('#ticket').text(formatItem(data));
+                })
+                .fail(function (jqXHR, textStatus, err) {
+                    $('#ticket').text('Error: ' + err + "text status" + textStatus);
+                });
+        }
+        function putTicket() {
+            var id = $('#ticketId').val();
+            var reporter = $('#Reporter').val();
+            var message = $('#Message').val();
+            $.ajax({
+                url: uri + '/' + id + '/' + reporter + '/' + message,
+                type: 'PUT',
+                success: function (result) {
+                    $('#ticket').text(id + 'patched' + message);
+                },
+                fail: function (jqXHR, textStatus, err) {
+                    $('#ticket').text('Error: ' + err + "text status" + textStatus);
+                }
+            });
+        }
+        //
+        function patchTicket() {
+            var id = $('#ticketId').val();
+            var message = $('#Message').val();
+            $.ajax({
+                url: uri + '/' + id + '/' + message,
+                type: 'PATCH',
+                success: function (result) {
+                    $('#ticket').text(id + 'patched' + message);
+                },
+                fail: function (jqXHR, textStatus, err) {
+                    $('#ticket').text('Error: ' + err + "text status" + textStatus);
+                }
+            });
+        }
     </script>
 </body>
 </html>
