@@ -69,8 +69,9 @@ namespace RESTAPI.Controllers
             using (var db = new TicketsEntities())
             {
                 var ticket = new TICKET(id, reporter, message);
-
-                return Ok(db.TICKETS.Add(ticket));
+                db.TICKETS.Add(ticket);
+                db.SaveChanges();
+                return Ok(ticket);
             }
         }
         public IHttpActionResult PostTicket(int id, string reporter, string message)
@@ -78,10 +79,12 @@ namespace RESTAPI.Controllers
             using (var db = new TicketsEntities())
             {
                 var ticket = new TICKET(id, reporter, message);
-
-                return Ok(db.TICKETS.Add(ticket));
+                db.TICKETS.Add(ticket);
+                db.SaveChanges();
+                return Ok(ticket);
             }
         }
+        [HttpPatch]
         public IHttpActionResult PatchTicket(int id, string message)
         {
             using (var db = new TicketsEntities())
@@ -109,6 +112,7 @@ namespace RESTAPI.Controllers
                 if (ticket != null)
                 {
                     db.TICKETS.Remove(ticket);
+                    db.SaveChanges();
                     var response = new HttpResponseMessage();
                     response.Headers.Add("DeleteMessage", "Succsessfuly Deleted!!!");
                     return response;

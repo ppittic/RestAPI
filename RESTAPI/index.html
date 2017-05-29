@@ -50,8 +50,8 @@
         });
     });
 
-    function formatItem(item) {
-        return item.Reporter + ' MSG: ' + item.Message;
+        function formatItem(item) {
+            return item.id + " Reporter: " + item.Reporter + ' MSG: ' + item.Message;
     }
 
     function find() {
@@ -95,13 +95,16 @@
             var id = $('#ticketId').val();
             var reporter = $('#Reporter').val();
             var message = $('#Message').val();
-            $.postJSON(uri + '/' + id + '/' + reporter + '/' + message)
-                .done(function (data) {
-                    $('#ticket').text(formatItem(data));
-                })
-                .fail(function (jqXHR, textStatus, err) {
+            $.ajax({
+                url: uri + '/' + id + '/' + reporter + '/' + message,
+                type: 'POST',
+                success: function (result) {
+                    $('#ticket').text(id + reporter + message + 'Inserted');
+                },
+                fail: function (jqXHR, textStatus, err) {
                     $('#ticket').text('Error: ' + err + "text status" + textStatus);
-                });
+                }
+            });
         }
         function putTicket() {
             var id = $('#ticketId').val();
@@ -111,7 +114,7 @@
                 url: uri + '/' + id + '/' + reporter + '/' + message,
                 type: 'PUT',
                 success: function (result) {
-                    $('#ticket').text(id + 'patched' + message);
+                    $('#ticket').text(id + reporter + message + 'PUT');
                 },
                 fail: function (jqXHR, textStatus, err) {
                     $('#ticket').text('Error: ' + err + "text status" + textStatus);

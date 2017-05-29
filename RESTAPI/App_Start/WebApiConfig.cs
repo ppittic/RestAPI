@@ -19,6 +19,11 @@ namespace RESTAPI
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+            config.Routes.MapHttpRoute(
+            name: "TicketApi",
+            routeTemplate: "api/{controller}/{id}/{reporter}/{message}",
+            defaults: new { id = RouteParameter.Optional, reporter = RouteParameter.Optional, message = RouteParameter.Optional }
+            );
         }
     }
 }
