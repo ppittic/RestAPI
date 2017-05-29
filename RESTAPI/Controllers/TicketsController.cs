@@ -64,6 +64,7 @@ namespace RESTAPI.Controllers
                 });
             }
         }
+        [HttpPut]
         public IHttpActionResult PutTicket(int id, string reporter, string message)
         {
             using (var db = new TicketsEntities())
@@ -74,6 +75,7 @@ namespace RESTAPI.Controllers
                 return Ok(ticket);
             }
         }
+        [HttpPost]
         public IHttpActionResult PostTicket(int id, string reporter, string message)
         {
             using (var db = new TicketsEntities())
