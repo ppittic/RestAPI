@@ -10,6 +10,10 @@
 <body>
     <!--AJAX used to call the web API. jQuery used to make the AJAX calls and also to update the page with the results.-->
 
+    <div class="jumbotron">
+        <h5>REST API Tickets Task</h5>
+    </div>
+
     <div class="form-group">
         <label for="ticketId">Id:</label>
         <input type="text" class="form-control" id="ticketId">
@@ -28,8 +32,8 @@
         <button type="button" onclick="showAll();" class="btn btn-primary">Show All Tickets</button>
         <p id="ticket" />
     </div>
-
-    <div>
+    <br/>
+    <div class="alert-info">
         <p class="bg-info" id="AllTickets" hidden>All Tickets</p>
         <ul id="tickets" class="list-group" />
     </div>
@@ -37,17 +41,23 @@
     <script>
         var uri = 'api/tickets';
 
+        function formatItem(item)
+        {
+            return ' . '+ item.Reporter + ': "' + item.Message + '"';
+        }
+
         function showAll() {
             // Send an AJAX request
             $.getJSON(uri)
                 .done(function (data) {
                     // On success, 'data' contains a list of products.
                     $.each(data, function (key, item) {
-                        // Add a list item for the product.
-                        $('<li>', { text: formatItem(item) }).appendTo($('#tickets'));
-                        $('#AllTickets').show();
+                    // Add a list item for the product.
+                    $("#tickets").append('<li class="list-group-item">' + '<span class="badge pull-left">'+ item.Id + '</span>' + formatItem(item) + '</li>');
+
+                    $('#AllTickets').show();
                     });
-                })
+                 })
                 .fail(function (jqXHR, textStatus, err) {
                     $('#AllTickets').text('Error: ' + err);
 
@@ -56,10 +66,6 @@
                     else
                         alert('getJSON request failed! ' + textStatus + "err:" + err);
                 });
-        }
-
-        function formatItem(item) {
-            return item.id + " Reporter: " + item.Reporter + ' MSG: ' + item.Message;
         }
 
         function find() {
