@@ -3,78 +3,86 @@
 <head>
     <meta charset="utf-8" />
     <title>Tickets</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
 </head>
 <body>
     <!--AJAX used to call the web API. jQuery used to make the AJAX calls and also to update the page with the results.-->
-    <div>
-        <p id="AllTickets">
-        <h2>All Tickets</h2>
-        </p>
-       
-        <ul id="tickets" />
+
+    <div class="form-group">
+        <label for="ticketId">Id:</label>
+        <input type="text" class="form-control" id="ticketId">
+        <label for="Reporter">Reporter:</label>
+        <input type="text" class="form-control" id="Reporter">
+        <label for="Reporter">Message:</label>
+        <input type="text" class="form-control" id="Message">
     </div>
-    <div>
-        <h2>Search by ID</h2>
-        <input type="text" id="ticketId" size="5" />
-        <input type="text" id="Reporter" size="50" />
-        <input type="text" id="Message" size="50" />
-        <input type="button" value="Search" onclick="find();" />
-        <input type="button" value="Delete" onclick="deleteTicket();" />
-        <input type="button" value="Put" onclick="putTicket();" />
-        <input type="button" value="Post" onclick="postTicket();" />
-        <input type="button" value="Patch" onclick="patchTicket();" />
+
+    <div class="btn-group">
+        <button type="button" onclick="find();" class="btn btn-info">Search</button>
+        <button type="button" onclick="deleteTicket();" class="btn btn-info">Delete</button>
+        <button type="button" onclick="putTicket();" class="btn btn-info">Put</button>
+        <button type="button" onclick="postTicket();" class="btn btn-info">Post</button>
+        <button type="button" onclick="patchTicket();" class="btn btn-info">Patch</button>
+        <button type="button" onclick="showAll();" class="btn btn-primary">Show All Tickets</button>
         <p id="ticket" />
     </div>
 
-    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+    <div>
+        <p class="bg-info" id="AllTickets" hidden>All Tickets</p>
+        <ul id="tickets" class="list-group" />
+    </div>
+
     <script>
-    var uri = 'api/tickets';
+        var uri = 'api/tickets';
 
-    $(document).ready(function () {
-      // Send an AJAX request
-      $.getJSON(uri)
-          .done(function (data) {
-            // On success, 'data' contains a list of products.
-            $.each(data, function (key, item) {
-              // Add a list item for the product.
-              $('<li>', { text: formatItem(item) }).appendTo($('#tickets'));
-            });
-            })
-         .fail(function (jqXHR, textStatus, err) {
-             $('#AllTickets').text('Error: ' + err);
+        function showAll() {
+            // Send an AJAX request
+            $.getJSON(uri)
+                .done(function (data) {
+                    // On success, 'data' contains a list of products.
+                    $.each(data, function (key, item) {
+                        // Add a list item for the product.
+                        $('<li>', { text: formatItem(item) }).appendTo($('#tickets'));
+                        $('#AllTickets').show();
+                    });
+                })
+                .fail(function (jqXHR, textStatus, err) {
+                    $('#AllTickets').text('Error: ' + err);
 
-             if (err == "Critical Exception")
-                 alert("Critical"); 
-             else
-             alert('getJSON request failed! ' + textStatus + "err:"+err); 
-        });
-    });
+                    if (err == "Critical Exception")
+                        alert("Critical");
+                    else
+                        alert('getJSON request failed! ' + textStatus + "err:" + err);
+                });
+        }
 
         function formatItem(item) {
             return item.id + " Reporter: " + item.Reporter + ' MSG: ' + item.Message;
-    }
+        }
 
-    function find() {
-        var id = $('#ticketId').val();
-        /*$.ajaxSetup({
-            headers: {
-                'Accept-Encoding': 'gzip'
-           }
-         });
-        */
-        $.getJSON(uri + '/' + id)
-          .done(function (data) {
-            $('#ticket').text(formatItem(data));
-          })
-          .fail(function (jqXHR, textStatus, err) {
-              $('#ticket').text('Error: ' + err + "text status" + textStatus);
+        function find() {
+            var id = $('#ticketId').val();
+            /*$.ajaxSetup({
+                headers: {
+                    'Accept-Encoding': 'gzip'
+               }
+             });
+            */
+            $.getJSON(uri + '/' + id)
+                .done(function (data) {
+                    $('#ticket').text(formatItem(data));
+                })
+                .fail(function (jqXHR, textStatus, err) {
+                    $('#ticket').text('Error: ' + err + "text status" + textStatus);
 
-              if (jqXHR.status == 404) {
-                  alert("404 Not Found");
-              } else {
-                  alert("Other non-handled error type");
-              }
-          });
+                    if (jqXHR.status == 404) {
+                        alert("404 Not Found");
+                    } else {
+                        alert("Other non-handled error type");
+                    }
+                });
         }
 
         function deleteTicket() {

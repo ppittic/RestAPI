@@ -1,5 +1,4 @@
-﻿using RESTAPI.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -12,20 +11,30 @@ namespace RESTAPI.Controllers
 {
     public class TicketsController : ApiController
     {
+
+        private TicketsEntities db = new TicketsEntities();
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                this.db.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
+
         //*****************************************
         //Controller Method   URI - GetAllTickets	/api/tickets
         //*****************************************
         public async Task<IEnumerable<TICKET>> GetAllTickets()
-        {     
+        {
             try
             {
-                using (var db = new TicketsEntities())
-                {      
-                    return await db.TICKETS.ToListAsync<TICKET>();
-                }
+                return await db.TICKETS.ToListAsync<TICKET>();
             }
-            catch(Exception e)
-            {       
+            catch (Exception e)
+            {
                 string errMessage = e.Message;  //Debug purposes
 
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError)
@@ -42,16 +51,13 @@ namespace RESTAPI.Controllers
         {
             try
             {
-                using (var db = new TicketsEntities())
-                {
-                    var ticket = db.TICKETS.FirstOrDefault((p) => p.Id == id);
+                var ticket = db.TICKETS.FirstOrDefault((p) => p.Id == id);
 
-                    if (ticket == null)
-                    {
-                        return NotFound();
-                    }
-                    return Ok(ticket);
+                if (ticket == null)
+                {
+                    return NotFound();
                 }
+                return Ok(ticket);
             }
             catch (Exception e)
             {
@@ -67,61 +73,49 @@ namespace RESTAPI.Controllers
         [HttpPut]
         public IHttpActionResult PutTicket(int id, string reporter, string message)
         {
-            using (var db = new TicketsEntities())
-            {
-                var ticket = new TICKET(id, reporter, message);
-                db.TICKETS.Add(ticket);
-                db.SaveChanges();
-                return Ok(ticket);
-            }
+            var ticket = new TICKET(id, reporter, message);
+            db.TICKETS.Add(ticket);
+            db.SaveChanges();
+            return Ok(ticket);
         }
         [HttpPost]
         public IHttpActionResult PostTicket(int id, string reporter, string message)
         {
-            using (var db = new TicketsEntities())
-            {
-                var ticket = new TICKET(id, reporter, message);
-                db.TICKETS.Add(ticket);
-                db.SaveChanges();
-                return Ok(ticket);
-            }
+            var ticket = new TICKET(id, reporter, message);
+            db.TICKETS.Add(ticket);
+            db.SaveChanges();
+            return Ok(ticket);
         }
-        [HttpPatch]
-        public IHttpActionResult PatchTicket(int id, string message)
+    [HttpPatch]
+    public IHttpActionResult PatchTicket(int id, string message)
+    {
+        var ticket = db.TICKETS.Find(id);
+        if (ticket != null)
         {
-            using (var db = new TicketsEntities())
-            {
-                var ticket = db.TICKETS.Find(id);
-                if (ticket != null)
-                {
-                    ticket.Message = message;
-                    db.TICKETS.Attach(ticket);
-                    var entry = db.Entry(ticket);
-                    entry.Property(e => e.Message).IsModified = true;
-                    db.SaveChanges();
+            ticket.Message = message;
+            db.TICKETS.Attach(ticket);
+            var entry = db.Entry(ticket);
+            entry.Property(e => e.Message).IsModified = true;
+            db.SaveChanges();
 
-                    return Ok(entry);
-                }
-                else return Content(HttpStatusCode.BadRequest, "Error");
-            }
+            return Ok(entry);
         }
-        [HttpDelete]
-        public HttpResponseMessage DeleteTicket(int id)
+        else return Content(HttpStatusCode.BadRequest, "Error");
+    }
+    [HttpDelete]
+    public HttpResponseMessage DeleteTicket(int id)
+    {
+        var ticket = db.TICKETS.Find(id);
+        if (ticket != null)
         {
-            using (var db = new TicketsEntities())
-            {
-                var ticket = db.TICKETS.Find(id);
-                if (ticket != null)
-                {
-                    db.TICKETS.Remove(ticket);
-                    db.SaveChanges();
-                    var response = new HttpResponseMessage();
-                    response.Headers.Add("DeleteMessage", "Succsessfuly Deleted!!!");
-                    return response;
-                }
-                else
-                    throw new HttpResponseException(HttpStatusCode.NotFound);
-            }  
+            db.TICKETS.Remove(ticket);
+            db.SaveChanges();
+            var response = new HttpResponseMessage();
+            response.Headers.Add("DeleteMessage", "Succsessfuly Deleted!!!");
+            return response;
         }
+        else
+            throw new HttpResponseException(HttpStatusCode.NotFound);
+    }
     }
 }
