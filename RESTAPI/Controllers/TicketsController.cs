@@ -24,9 +24,9 @@ namespace RESTAPI.Controllers
             base.Dispose(disposing);
         }
 
-        //*****************************************
+        //******************************************************
         //Controller Method   URI - GetAllTickets	/api/tickets
-        //*****************************************
+        //******************************************************
         public async Task<IEnumerable<TICKET>> GetAllTickets()
         {
             try
@@ -44,9 +44,9 @@ namespace RESTAPI.Controllers
                 });
             }
         }
-        //*****************************************
+        //******************************************************
         //Controller Method   URI - GetTicket	/api/tickets/id
-        //*****************************************
+        //******************************************************
         public IHttpActionResult GetTicket(int id)
         {
             try
@@ -145,7 +145,7 @@ namespace RESTAPI.Controllers
                     db.TICKETS.Remove(ticket);
                     db.SaveChanges();
                     var response = new HttpResponseMessage();
-                    response.Headers.Add("DeleteMessage", "Succsessfuly Deleted!!!");
+                    response.Headers.Add("DeleteMessage", "Succsessfuly Deleted!");
                     return response;
                 }
                 else

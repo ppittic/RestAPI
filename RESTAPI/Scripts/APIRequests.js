@@ -70,7 +70,7 @@ function postTicket() {
         url: uri + '/' + id + '/' + reporter + '/' + message,
         type: 'POST',
         success: function (result) {
-            $('#ticket').text('Item with reporter ' + reporter + ' and message: ' + message + ' POSTED ' + ' ID ' + result.Id);
+            $('#ticket').text('Item with reporter: ' + reporter + ' and message: ' + message + '  POSTED  ' + '  ID  ' + result.Id);
         },
         fail: function (jqXHR, textStatus, err) {
             alert('Error: ' + err + "; Text status" + textStatus);
@@ -87,7 +87,7 @@ function putTicket() {
         url: uri + '/' + id + '/' + reporter + '/' + message,
         type: 'PUT',
         success: function (result) {
-            $('#ticket').text('Item with reporter ' + reporter + ' and message: ' + message + ' PUT ' + 'ID ' + result.Id);
+            $('#ticket').text('Item with reporter: ' + reporter + ' and message: ' + message + '  PUT  ' + '  ID  ' + result.Id);
         },
         fail: function (jqXHR, textStatus, err) {
             alert('Error: ' + err + "; Text status" + textStatus);
@@ -102,7 +102,7 @@ function patchTicket() {
         url: uri + '/' + id + '/' + message,
         type: 'PATCH',
         success: function (result) {
-            $('#ticket').text('Item with ID '+ id + ' patched. New message: ' + message);
+            $('#ticket').text('Item with ID: '+ id + ' patched. New message: ' + message);
         },
         fail: function (jqXHR, textStatus, err) {
             alert('Error: ' + err + "; Text status" + textStatus);
