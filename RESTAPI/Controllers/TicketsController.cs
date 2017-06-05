@@ -88,7 +88,7 @@ namespace RESTAPI.Controllers
                     entry.Property(e => e.Reporter).IsModified = true;
                     db.SaveChanges();
 
-                    return Ok(entry);
+                    return Ok(ticket);
                 }
             }
             catch (Exception e)

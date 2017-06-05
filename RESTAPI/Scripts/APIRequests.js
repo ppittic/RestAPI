@@ -87,7 +87,7 @@ function putTicket() {
         url: uri + '/' + id + '/' + reporter + '/' + message,
         type: 'PUT',
         success: function (result) {
-            $('#ticket').text('Item with reporter: ' + reporter + ' and message: ' + message + '  PUT  ');
+            $('#ticket').text('Item with reporter: ' + result.Reporter + ' and message: ' + result.Message + '  PUT at ID: ' + result.Id);
         },
         fail: function (jqXHR, textStatus, err) {
             alert('Error: ' + err + "; Text status" + textStatus);
